@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<title>Team Wordle</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/style.css') }}">
+</head>
+<body>
+<script src="{{ url_for('static', filename='./javascript/wordle.js') }}" type="text/javascript" charset="utf-8"></script>
+
+<h1 id="title">Team Wordle</h1>
+<section id="game">
+    <section id="game-info">
+        <label id="name-label" for="name-input">Enter your name: </label>
+	    <input type="text" id="name-input" autocomplete="off" value="">
+        <button id="start-game" onclick="connect_to_server()">Start Game</button>
+        <div>
+            <h2 id="player-1-label">Player 1: </h2>
+            <h2 id="player-1-name">Waiting to Connect</h2>
+        </div>
+        <div>
+            <h2 id="player-2-label">Player 2: </h2>
+            <h2 id="player-2-name">Waiting to Connect</h2>
+        </div>
+    </section>
+    <div id="game-board">
+        <div id="row-1" class="letter-row">
+            <div id="row-1-letter-1" class="letter-box"></div>
+            <div id="row-1-letter-2" class="letter-box"></div>
+            <div id="row-1-letter-3" class="letter-box"></div>
+            <div id="row-1-letter-4" class="letter-box"></div>
+            <div id="row-1-letter-5" class="letter-box"></div>
+        </div>
+        <div id="row-2" class="letter-row">
+            <div id="row-2-letter-1" class="letter-box"></div>
+            <div id="row-2-letter-2" class="letter-box"></div>
+            <div id="row-2-letter-3" class="letter-box"></div>
+            <div id="row-2-letter-4" class="letter-box"></div>
+            <div id="row-2-letter-5" class="letter-box"></div>
+        </div>
+        <div id="row-3" class="letter-row">
+            <div id="row-3-letter-1" class="letter-box"></div>
+            <div id="row-3-letter-2" class="letter-box"></div>
+            <div id="row-3-letter-3" class="letter-box"></div>
+            <div id="row-3-letter-4" class="letter-box"></div>
+            <div id="row-3-letter-5" class="letter-box"></div>
+        </div>
+        <div id="row-4" class="letter-row">
+            <div id="row-4-letter-1" class="letter-box"></div>
+            <div id="row-4-letter-2" class="letter-box"></div>
+            <div id="row-4-letter-3" class="letter-box"></div>
+            <div id="row-4-letter-4" class="letter-box"></div>
+            <div id="row-4-letter-5" class="letter-box"></div>
+        </div>
+        <div id="row-5" class="letter-row">
+            <div id="row-5-letter-1" class="letter-box"></div>
+            <div id="row-5-letter-2" class="letter-box"></div>
+            <div id="row-5-letter-3" class="letter-box"></div>
+            <div id="row-5-letter-4" class="letter-box"></div>
+            <div id="row-5-letter-5" class="letter-box"></div>
+        </div>
+    </div>
+</section>
+<section id="messages">
+    <h2 id="lower-message"></h2>
+</section>
+
+</body>
+</html>
