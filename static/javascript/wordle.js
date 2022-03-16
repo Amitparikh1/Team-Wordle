@@ -3,42 +3,52 @@ ROW_INDEX = 1;
 PLAYER_NUM = null;
 PLAYER_TURN = 1;
 function connect_to_server() {
+    // Get player & game info
+    let name = document.getElementById("name-input").value;
+    let game_id = document.getElementById("join-input").value;
+    // Change visibility
+    document.getElementById("setup-menu").className = "hidden";
+    document.getElementById("game-room").className = "visible";
     // Connect to server
     socket = io.connect('http://127.0.0.1:5000');
     socket.on('connect', function(){
-        socket.emit('client-connection', document.getElementById("name-input").value);
+        socket.emit('client-connection', {'name': name, 'game_id': game_id});
     });
     once_connected(socket);
 }
-
 function once_connected(socket){
-    socket.on('client-information', function(players_info){
+    socket.on('client-information', function(game_info){
+        console.log("RECEIVED INFO");
+        console.log(game_info);
+        // Read in data
+        let game_id = game_info['game_id'];
+        let player_1 = game_info['player_1'];
+        let player_2 = game_info['player_2'];
         if (PLAYER_NUM == null) {
-            PLAYER_NUM = players_info.length;
+            if (player_2 == "Waiting to Connect") {
+                PLAYER_NUM = 1;
+            }
+            else {
+                PLAYER_NUM = 2;
+            }
         }
-        players_info.forEach(player =>{
-            let player_num = player['player_num'];
-            let player_name = player['player_name']
-            document.getElementById("player-"+ player_num + "-name").innerHTML = player_name;
-        });
-        if (players_info.length == 2) {
-            document.getElementById("name-label").innerHTML = "Game is full";
-            document.getElementById("name-input").disabled = true;
-            document.getElementById("start-game").disabled = true;
-        }
+        // Set names
+        document.getElementById("player-1-name").innerHTML = player_1;
+        document.getElementById("player-2-name").innerHTML = player_2;
+        // Set Game ID
+        document.getElementById("game-id").innerHTML = game_id;
     });
     socket.on('guess-feedback', function(data){
-        console.log(data);
+        // Case where word was not valid
         if (!data['valid']){
             if (PLAYER_NUM == PLAYER_TURN) {
-                document.getElementById("lower-message").innerHTML = "Not a valid word - guess again"
+                document.getElementById("lower-message").innerHTML = "Not a valid word - guess again";
             }
             return
         }
         document.getElementById("lower-message").innerHTML = ""
         let guess = data['guess'];
         let feedback = data['feedback'];
-        // Case where word was not valid
         // If word was a valid guess
         // Flip player turn
         if (PLAYER_TURN == 1) {
@@ -52,16 +62,30 @@ function once_connected(socket){
         LETTER_INDEX = 0;
         // Shade previous rows letters
         for (let i = 1; i <= 5; i++) {
-            let color = document.getElementById('row-' + ROW_INDEX + '-letter-' + i).style.backgroundColor;
+            let color = "white";
             if (feedback[i - 1] == 1) {
-                color = "#FAFDBA"
+                color = "#FAFDBA";
             }
             else if (feedback[i - 1] == 2) {
-                color = "#B2F97B"
+                color = "#B2F97B";
             }
             document.getElementById('row-' + (ROW_INDEX - 1) + '-letter-' + i).style.backgroundColor = color;
             document.getElementById('row-' + (ROW_INDEX - 1) + '-letter-' + i).innerHTML = guess[i - 1];
         }
+        // If word was completely correct
+        if (!(feedback.includes(1) || feedback.includes(0))) {
+            document.getElementById("lower-message").innerHTML = "Congratulations - your team guessed the word in " + (ROW_INDEX - 1) + " guesses!";
+            PLAYER_TURN = -1; // Neither player can go again because word was guessed
+            return
+        }
+        else if (ROW_INDEX >= 6){
+            // Team didn't get the word
+            let game_id = document.getElementById("game-id").innerHTML;
+            socket.emit('requesting-correct', game_id);
+        }
+    });
+    socket.on('correct-word', function(correct){
+        document.getElementById("lower-message").innerHTML = "Your team didn't get it - the word was " + correct;
     });
     document.onkeydown = function (e) {
         if (PLAYER_NUM == PLAYER_TURN) {
@@ -71,9 +95,9 @@ function once_connected(socket){
                 for (let i = 1; i <= 5; i++) {
                     guess = guess.concat(document.getElementById('row-' + ROW_INDEX + '-letter-' + i).innerHTML);
                 }
-                console.log(guess);
                 // Send guess to server
-                socket.emit('client-guess', guess);
+                let game_id = document.getElementById("game-id").innerHTML;
+                socket.emit('client-guess', {'guess': guess, 'game_id': game_id});
             }
             if (e.keyCode == 8) {
                 key = "";
