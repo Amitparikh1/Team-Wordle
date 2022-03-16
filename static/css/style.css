@@ -1,5 +1,14 @@
-#game-board {
+body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction: column;
+}
+
+#game-board, #game-info {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   flex-direction: column;
 }
 .letter-box {
@@ -22,4 +31,22 @@
 
 .letter-row {
   display: flex;
+}
+.player-labels {
+  display: flex;
+  flex-direction: row;
+  font-size: small;
+  margin: 20px;
+}
+#handshake {
+    width: 75px;
+    height: 75px;
+}
+.hidden {
+    display: none;
+    visibility: none;
+}
+.visible {
+    display: block;
+    visibility: visible;
 }

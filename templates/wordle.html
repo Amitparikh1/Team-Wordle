@@ -8,22 +8,34 @@
 </head>
 <body>
 <script src="{{ url_for('static', filename='./javascript/wordle.js') }}" type="text/javascript" charset="utf-8"></script>
-
 <h1 id="title">Team Wordle</h1>
-<section id="game">
-    <section id="game-info">
+<div class="visible" id="setup-menu">
+    <div id="name-div">
         <label id="name-label" for="name-input">Enter your name: </label>
-	    <input type="text" id="name-input" autocomplete="off" value="">
-        <button id="start-game" onclick="connect_to_server()">Start Game</button>
-        <div>
-            <h2 id="player-1-label">Player 1: </h2>
-            <h2 id="player-1-name">Waiting to Connect</h2>
+        <input type="text" id="name-input" autocomplete="off" value="">
+    </div>
+    <div id="action-div">
+        <label id="join-label" for="join-input">Enter game code: </label>
+        <input type="text" id="join-input" autocomplete="off" value="">
+        <button id="join-game" onclick="connect_to_server()">Start</button>
+    </div>
+</div>
+<div class="hidden" id="game-room">
+    <div id="game-info">
+        <h2 id="game-id">Game ID</h2>
+        <div class="player-labels">
+            <div class="player-labels">
+                <h2 id="player-1-label">Player 1: </h2>
+                <h2 id="player-1-name">Waiting to Connect</h2>
+            </div>
+            <img id="handshake" src="{{ url_for('static', filename='./images/handshake.png') }}">
+            <div class="player-labels">
+                <h2 id="player-2-label">Player 2: </h2>
+                <h2 id="player-2-name">Waiting to Connect</h2>
+            </div>
         </div>
-        <div>
-            <h2 id="player-2-label">Player 2: </h2>
-            <h2 id="player-2-name">Waiting to Connect</h2>
-        </div>
-    </section>
+
+    </div>
     <div id="game-board">
         <div id="row-1" class="letter-row">
             <div id="row-1-letter-1" class="letter-box"></div>
@@ -60,11 +72,18 @@
             <div id="row-5-letter-4" class="letter-box"></div>
             <div id="row-5-letter-5" class="letter-box"></div>
         </div>
+        <div id="row-6" class="letter-row">
+            <div id="row-6-letter-1" class="letter-box"></div>
+            <div id="row-6-letter-2" class="letter-box"></div>
+            <div id="row-6-letter-3" class="letter-box"></div>
+            <div id="row-6-letter-4" class="letter-box"></div>
+            <div id="row-6-letter-5" class="letter-box"></div>
+        </div>
     </div>
-</section>
-<section id="messages">
-    <h2 id="lower-message"></h2>
-</section>
+    <div id="messages">
+        <h2 id="lower-message"></h2>
+    </div>
+</div>
 
 </body>
 </html>
