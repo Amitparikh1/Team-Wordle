@@ -26,6 +26,10 @@ def receive_guess(client_guess):
             word = game['random_word']
             player1 = game['clients']['player_1']
             player2 = game['clients']['player_2']
+    # If player 2 hasn't joined yet...
+    if player2['client'] is None:
+        emit('guess-feedback', {'valid': False, 'guess': guess, 'feedback': -1}, room=player1['client'])
+        return
     is_valid, feedback = check_guess(guess, word)
     emit('guess-feedback', {'valid': is_valid, 'guess': guess, 'feedback': feedback}, room=player1['client'])
     emit('guess-feedback', {'valid': is_valid, 'guess': guess, 'feedback': feedback}, room=player2['client'])
