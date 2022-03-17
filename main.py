@@ -40,7 +40,6 @@ def connect_client(client_info):
     global GAMES
     client_name = client_info['name']
     client_game = client_info['game_id']
-    print(GAMES)
     game_ids = []
     # If game_id exists, join client to that game
     for game in GAMES:

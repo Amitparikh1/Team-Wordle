@@ -72,10 +72,10 @@ function once_connected(socket){
         for (let i = 1; i <= 5; i++) {
             let color = "white";
             if (feedback[i - 1] == 1) {
-                color = "#FAFDBA";
+                color = "#e6cd40";
             }
             else if (feedback[i - 1] == 2) {
-                color = "#B2F97B";
+                color = "#85c73e";
             }
             document.getElementById('row-' + (ROW_INDEX - 1) + '-letter-' + i).style.backgroundColor = color;
             document.getElementById('row-' + (ROW_INDEX - 1) + '-letter-' + i).innerHTML = guess[i - 1];
