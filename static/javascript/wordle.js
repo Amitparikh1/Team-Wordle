@@ -10,7 +10,7 @@ function connect_to_server() {
     document.getElementById("setup-menu").className = "hidden";
     document.getElementById("game-room").className = "visible";
     // Connect to server
-    socket = io.connect('http://127.0.0.1:5000');
+    socket = io.connect(window.location.href);
     socket.on('connect', function(){
         socket.emit('client-connection', {'name': name, 'game_id': game_id});
     });
@@ -27,10 +27,14 @@ function once_connected(socket){
         if (PLAYER_NUM == null) {
             if (player_2 == "Waiting to Connect") {
                 PLAYER_NUM = 1;
+                document.getElementById("lower-message").innerHTML = "Waiting for Player 2 to connect!";
             }
             else {
                 PLAYER_NUM = 2;
             }
+        }
+        else {
+            document.getElementById("lower-message").innerHTML = "";
         }
         // Set names
         document.getElementById("player-1-name").innerHTML = player_1;
@@ -39,6 +43,10 @@ function once_connected(socket){
         document.getElementById("game-id").innerHTML = game_id;
     });
     socket.on('guess-feedback', function(data){
+        // If feedback == -1, player 2 hasn't joined yet
+        if (data['feedback'] == -1) {
+            return
+        }
         // Case where word was not valid
         if (!data['valid']){
             if (PLAYER_NUM == PLAYER_TURN) {
@@ -78,7 +86,7 @@ function once_connected(socket){
             PLAYER_TURN = -1; // Neither player can go again because word was guessed
             return
         }
-        else if (ROW_INDEX >= 6){
+        else if (ROW_INDEX > 6){
             // Team didn't get the word
             let game_id = document.getElementById("game-id").innerHTML;
             socket.emit('requesting-correct', game_id);
@@ -101,6 +109,7 @@ function once_connected(socket){
             }
             if (e.keyCode == 8) {
                 key = "";
+                LETTER_INDEX -= 1;
             }
             else if ((e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 97 && e.keyCode <= 122)) {
                 // Letter passed
@@ -118,10 +127,7 @@ function once_connected(socket){
             console.log(key);
             curr_box = document.getElementById('row-' + ROW_INDEX + '-letter-' + LETTER_INDEX);
             curr_box.innerHTML = key;
-            if (e.keyCode == 8) {
-                LETTER_INDEX -= 1;
-            }
-            else if ((e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 97 && e.keyCode <= 122)) {
+            if (e.keyCode != 8 && (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 97 && e.keyCode <= 122)) {
                 LETTER_INDEX += 1;
             }
         }
