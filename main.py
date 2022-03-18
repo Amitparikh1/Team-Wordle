@@ -19,6 +19,20 @@ def index():
 # Listen for events from the clients
 @socketio.on('client-guess')
 def receive_guess(client_guess):
+    """
+    :param client_guess: of form {'guess': guess, 'game_id': game}
+    :return:
+         This function will emit data in the form {'valid': is_valid, 'guess': guess, 'feedback': feedback} to all
+         clients that are part of the game
+            is_valid - is the guess a valid word from our word bank
+            guess - the original guess
+            feedback - an array of 5 digits indicating the correctness of the guess
+                0 - character is not in the word
+                1 - character is in the word but in the wrong position
+                2 - character is in the word and in the correct position
+                ex. If the word is "tests" and the guess is "trace":
+                    feedback = [2, 0, 0, 0, 1]
+    """
     global GAMES
     game_id = client_guess['game_id']
     guess = client_guess['guess']
@@ -41,6 +55,14 @@ def receive_guess(client_guess):
 
 @socketio.on('client-connection')
 def connect_client(client_info):
+    """
+    :param client_info: in form {'name': name, 'game_id': game_id}
+    :return:
+        This function emits data to the relevant clients in the form
+        {'game_id': 4 digit integer representing game_id,
+        'player_1': string for player 1's name,
+        'player_2': string for player 2's name}
+    """
     global GAMES
     client_name = client_info['name']
     client_game = client_info['game_id']
@@ -72,6 +94,11 @@ def connect_client(client_info):
 
 @socketio.on('requesting-correct')
 def send_correct(game_id):
+    """
+    :param game_id: 4 digit number
+    :return:
+        This function will emit the game's correct word to all clients that are a part of the game
+    """
     for game in GAMES:
         if game_id == game['game_id']:
             word = game['random_word']
@@ -118,6 +145,10 @@ def check_guess(guess, word):
 
 
 def generate_id(game_ids):
+    """
+    :param game_ids: the current game ids that are in use
+    :return: a new game id that isn't in use yet
+    """
     id = random.randint(1000, 9999)
     while id in game_ids:
         id = random.randint(1000, 9999)
@@ -125,6 +156,9 @@ def generate_id(game_ids):
 
 
 def generate_random_word():
+    """
+    :return: a random word from our word bank
+    """
     global VALID_WORDS
     word = random.choice(VALID_WORDS)
     return word
