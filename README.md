@@ -27,6 +27,7 @@ requirements are listed in the `requirements.txt` file. Run `pip install require
 
 ## Example
 
+![Alt text](example.gif)
 
 ## Next Steps
 
