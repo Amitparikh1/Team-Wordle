@@ -1,11 +1,14 @@
+# Imports
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import random
 
+# Global Variables
 GAMES = []
 with open('valid-wordle-words.txt') as f:
     VALID_WORDS = f.read().splitlines()
 
+# Set up Flask app with flask_socketio
 app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/static/')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -13,6 +16,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 def index():
     return render_template('wordle.html')
 
+# Listen for events from the clients
 @socketio.on('client-guess')
 def receive_guess(client_guess):
     global GAMES
@@ -44,7 +48,7 @@ def connect_client(client_info):
     # If game_id exists, join client to that game
     for game in GAMES:
         game_ids.append(game['game_id'])
-        if client_game == game['game_id']:
+        if client_game == game['game_id'] and (game['clients']['player_1']['client'] is None or game['clients']['player_2']['client'] is None):
             player1 = game['clients']['player_1']
             player2 = game['clients']['player_2']
             player2['name'] = client_name
@@ -77,7 +81,7 @@ def send_correct(game_id):
             emit('correct-word', word, room=player2['client'])
 
 
-
+# Helper functions
 def check_guess(guess, word):
     """
     :param guess: the player's guess for the word
@@ -122,7 +126,8 @@ def generate_id(game_ids):
 
 def generate_random_word():
     global VALID_WORDS
-    return random.choice(VALID_WORDS)
+    word = random.choice(VALID_WORDS)
+    return word
 
 
 if __name__ == '__main__':

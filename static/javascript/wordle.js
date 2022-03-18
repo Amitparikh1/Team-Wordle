@@ -1,7 +1,9 @@
+// GLOBAL VARIABLES
 LETTER_INDEX = 0;
 ROW_INDEX = 1;
 PLAYER_NUM = null;
 PLAYER_TURN = 1;
+
 function connect_to_server() {
     // Get player & game info
     let name = document.getElementById("name-input").value;
@@ -16,7 +18,9 @@ function connect_to_server() {
     });
     once_connected(socket);
 }
+
 function once_connected(socket){
+    // Once the client has connected - listen for events from server
     socket.on('client-information', function(game_info){
         console.log("RECEIVED INFO");
         console.log(game_info);
