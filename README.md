@@ -3,7 +3,7 @@ Take turns with a partner to play Wordle!
 
 ## Technologies Used
 
-This app uses Flask for web development and Flask-SocketIO for low latency, bi-directional communication between the server and its (potentially multiple) clients. Using Flask-SocketIO allowed me to easily send data from the server to relevant clients by creating custom events. I could then listen for these events and define the necessary client-side and server-side behavior.
+This app uses Flask for web development and Flask-SocketIO for low latency, bi-directional communication between the server and its (potentially multiple) clients. Using Flask-SocketIO allows for easy transmission of data from the server to relevant clients by emitting custome events. I could then define the necessary client-side and server-side behavior in the case of these events.
 
 ## Running this project
 
